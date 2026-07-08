@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { Link, useNavigation, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Eye,
@@ -20,12 +20,74 @@ import {
   Check,
   Plane,
   Luggage,
+  Factory,
 } from "lucide-react-native";
 import { useState } from "react";
+import { useAuth, useSignIn, useSignUp } from "@clerk/expo";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agree, setAgree] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [pendingVerification , setpendingVerification] =useState(false);
+  const { signIn, errors, fetchStatus } = useSignIn();
+  const router = useRouter();
+  const navigate=useNavigation();
+
+  const isLoading = fetchStatus === "fetching";
+
+  const onSignInPres= async()=>{
+    const {error} = await signIn.password({
+      emailAddress:email,
+      password
+    });
+
+    if(error){
+      alert(error.message);
+      return;
+    }
+
+    if(signIn.status==="complete"){
+      await signIn.finalize({
+        navigate:({session,decorateUrl})=>{
+          if(session?.currentTask){
+            console.log(session?.currentTask);
+            return;
+          }
+          const url=decorateUrl("/");
+          router.replace(url as any);
+        }
+      })
+    }
+    else if(signIn.status==="needs_client_trust"){
+      const emailCodeFactor=signIn.supportedSecondFactors.find((factor)=>factor.strategy==="email_code");
+      if(emailCodeFactor){
+        await signIn.mfa.sendEmailCode();
+        setpendingVerification(true);
+      }
+    }
+  }
+
+  const onVerifyPres=async()=>{
+    await signIn.mfa.verifyEmailCode({code});
+
+    if(signIn.status==="complete"){
+      await signIn.finalize({
+        navigate:({session,decorateUrl})=>{
+          if(session?.currentTask){
+            console.log(session?.currentTask);
+            return;
+          }
+          const url=decorateUrl("/");
+          router.replace(url as any);
+        }
+      })
+    }
+  }
 
   return (
     <View className="flex-1 bg-[#EAF4FF]">
@@ -72,6 +134,8 @@ export default function SignIn() {
               <Text className="text-blue-600">HomeHive Account</Text>
             </Text>
 
+          {!pendingVerification ? (
+            <>
             {/* Email */}
             <View className="mt-10">
               <View className="flex-row items-center rounded-full border border-slate-200 bg-slate-50 px-5 h-14">
@@ -81,6 +145,8 @@ export default function SignIn() {
                   placeholderTextColor="#94A3B8"
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  value={email}
+                  onChangeText={setEmail}
                   className="flex-1 ml-3 text-base text-slate-900"
                 />
               </View>
@@ -95,6 +161,8 @@ export default function SignIn() {
                   placeholderTextColor="#94A3B8"
                   secureTextEntry={!showPassword}
                   className="flex-1 ml-3 text-base text-slate-900"
+                  value={password}
+                  onChangeText={setPassword}
                 />
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                   {showPassword ? (
@@ -134,11 +202,44 @@ export default function SignIn() {
             </View>
 
             {/* Button */}
-            <Pressable className="mt-8 overflow-hidden rounded-full bg-slate-900">
+            <Pressable className="mt-8 overflow-hidden rounded-full bg-slate-900"
+            onPress={onSignInPres}
+            disabled={isLoading}>
               <View className="h-14 items-center justify-center">
                 <Text className="text-base font-bold text-white">Login</Text>
               </View>
             </Pressable>
+            </>
+          ):(
+            <>
+                {/* Verification Code */}
+                <View className="mt-10">
+                  <View className="flex-row items-center rounded-full border border-slate-200 bg-slate-50 px-5 h-14">
+                    <Lock size={18} color="#94A3B8" />
+                    <TextInput
+                      placeholder="Enter verification code"
+                      placeholderTextColor="#94A3B8"
+                      keyboardType="number-pad"
+                      value={code}
+                      onChangeText={setCode}
+                      className="flex-1 ml-3 text-base text-slate-900"
+                    />
+                  </View>
+                </View>
+                <Pressable className="pt-2 px-4"
+                onPress={()=>signIn.mfa.sendEmailCode()}>
+                  <Text className="text-blue-600">Send a new Code</Text>
+                </Pressable>
+
+                <Pressable className="mt-8 overflow-hidden rounded-full bg-slate-900"
+                onPress={onVerifyPres}>
+                  <View className="h-14 items-center justify-center">
+                    <Text className="text-base font-bold text-white">Verify Email</Text>
+                  </View>
+                </Pressable>
+                
+              </>
+          )}
 
             {/* Bottom */}
             <View className="flex-row items-center justify-center mt-8">
