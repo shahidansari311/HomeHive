@@ -11,5 +11,5 @@ export default function AuthLayout() {
 
     if(isSignedIn) return <Redirect href={"/"}/>
 
-    return <Stack/>
+    return <Stack screenOptions={{headerShown:false}}/>
 }
