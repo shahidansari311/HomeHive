@@ -1,30 +1,31 @@
 {
   "expo": {
-    "name": "first-app",
-    "slug": "first-app",
+    "name": "HomeHive",
+    "slug": "HomeHive",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "firstapp",
+    "icon": "./assets/logos/icon.png",
+    "scheme": "HomeHive",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shahid310.homehive"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/logos/andriod_foregroud.png",
+        "backgroundImage": "./assets/logos/andriod_background.png",
+        "monochromeImage": "./assets/logos/monochrome.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.shahid310.firstapp"
+      "package": "com.shahid310.homehive"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png",
+      "favicon": "./assets/logos/favicon.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -32,7 +33,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/logos/splash_icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -41,11 +42,18 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "@clerk/expo"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7df73bab-fdc3-4391-a8e8-7903332af315"
+      }
     }
   }
 }
