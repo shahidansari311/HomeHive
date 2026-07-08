@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -10,14 +11,66 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Mail, ArrowLeft, KeyRound, Plane } from "lucide-react-native";
+import { Mail, ArrowLeft, KeyRound, Plane ,Lock } from "lucide-react-native";
 import { useState } from "react";
+import { useSignIn } from "@clerk/expo";
 
 export default function ForgotPassword() {
+  const { signIn } = useSignIn();
+  const router = useRouter();
   const [emailSent, setEmailSent] = useState(false);
+  const [email,setEmail]=useState("");
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+
+  const onSendCode = async () => {
+    setIsLoading(true);
+    const { error: createError } = await signIn.create({ identifier: email });
+    if (createError) {
+      alert(createError.message);
+      setIsLoading(false);
+      return;
+    }
+ 
+    const { error: sendError } = await signIn.resetPasswordEmailCode.sendCode();
+    setIsLoading(false);
+    if (sendError) {
+      alert(sendError.message);
+      return;
+    }
+    setEmailSent(true);
+  };
+ 
+  const onResetPassword = async () => {
+    setIsLoading(true);
+    const { error } = await signIn.resetPasswordEmailCode.verifyCode({
+      code,
+      password
+    });
+    setIsLoading(false);
+ 
+    if (error) {
+      alert(error.message);
+      return;
+    }
+ 
+    if (signIn.status === "complete") {
+      await signIn.finalize({
+        navigate: ({ session, decorateUrl }) => {
+          if (session?.currentTask) {
+            console.log(session?.currentTask);
+            return;
+          }
+          const url = decorateUrl("/");
+          router.replace(url as any);
+        },
+      });
+    }
+  };
   return (
     <View className="flex-1 bg-[#EAF4FF]">
       {/* Illustration header */}
@@ -92,34 +145,87 @@ export default function ForgotPassword() {
                       placeholderTextColor="#94A3B8"
                       keyboardType="email-address"
                       autoCapitalize="none"
+                      value={email}
+                      onChangeText={setEmail}
                       className="flex-1 ml-3 text-base text-slate-900"
                     />
                   </View>
                 </View>
 
-                {/* Button */}
-                <Pressable
-                  className="mt-8 overflow-hidden rounded-full bg-slate-900"
-                  onPress={() => setEmailSent(true)}
-                >
-                  <View className="h-14 items-center justify-center">
-                    <Text className="text-base font-bold text-white">
-                      Submit
-                    </Text>
-                  </View>
-                </Pressable>
+                 {/* Button */}
+                {isLoading ? (
+                  <ActivityIndicator color="#0F172A" className="mt-8" />
+                ) : (
+                  <Pressable
+                    className="mt-8 overflow-hidden rounded-full bg-slate-900"
+                    onPress={onSendCode}
+                    disabled={isLoading}
+                  >
+                    <View className="h-14 items-center justify-center">
+                      <Text className="text-base font-bold text-white">
+                        Submit
+                      </Text>
+                    </View>
+                  </Pressable>
+                )}
               </>
             ) : (
-              <Pressable
-                className="mt-8 overflow-hidden rounded-full bg-slate-900"
-                onPress={() => setEmailSent(true)}
-              >
-                <View className="h-14 items-center justify-center">
-                  <Text className="text-base font-bold text-white">
-                    Resend Email
-                  </Text>
+              <>
+               {/* Verification Code */}
+                <View className="mt-10">
+                  <View className="flex-row items-center rounded-full border border-slate-200 bg-slate-50 px-5 h-14">
+                    <KeyRound size={18} color="#94A3B8" />
+                    <TextInput
+                      placeholder="Enter verification code"
+                      placeholderTextColor="#94A3B8"
+                      keyboardType="number-pad"
+                      value={code}
+                      onChangeText={setCode}
+                      className="flex-1 ml-3 text-base text-slate-900"
+                    />
+                  </View>
                 </View>
-              </Pressable>
+ 
+                {/* New Password */}
+                <View className="mt-4">
+                  <View className="flex-row items-center rounded-full border border-slate-200 bg-slate-50 px-5 h-14">
+                    <Lock size={18} color="#94A3B8" />
+                    <TextInput
+                      placeholder="Enter new password"
+                      placeholderTextColor="#94A3B8"
+                      secureTextEntry
+                      value={password}
+                      onChangeText={setPassword}
+                      className="flex-1 ml-3 text-base text-slate-900"
+                    />
+                  </View>
+                </View>
+ 
+                <Pressable
+                  className="pt-4 px-4"
+                  onPress={onSendCode}
+                  disabled={isLoading}
+                >
+                  <Text className="text-blue-600">Send a new code</Text>
+                </Pressable>
+ 
+                {/* Button */}
+                {isLoading ? (
+                  <ActivityIndicator color="#0F172A" className="mt-4" />
+                ) : (
+                  <Pressable
+                    className="mt-4 overflow-hidden rounded-full bg-slate-900"
+                    onPress={onResetPassword}
+                    disabled={isLoading}
+                  >
+                    <View className="h-14 items-center justify-center">
+                      <Text className="text-base font-bold text-white">
+                        Reset Password
+                      </Text>
+                    </View>
+                  </Pressable>
+                )}
+              </>
             )}
 
             {/* Bottom */}
