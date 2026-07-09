@@ -130,7 +130,7 @@ export default function ForgotPassword() {
 
             <Text className="mt-3 text-center text-slate-500 text-sm px-2">
               {emailSent
-                ? "We've sent a password reset link to your email address."
+                ? "We've sent a code to your email address."
                 : "Enter your email and we'll send you a link to reset your password."}
             </Text>
 
