@@ -21,7 +21,10 @@ export default function FeaturedCard({property}:{property:Property}) {
         opacity:property.is_sold ? 0.5 : 1
     }}
     onPress={()=>router.push(`/(root)/property/${property.id}`)}>
-      <Image source={{uri:property.images[0]}}
+      <Image source={
+        property.images.length > 0 ? {uri:property.images[0]} : 
+        require("../assets/logos/icon.png")
+      }
       className='w-full h-44'
       resizeMode='cover'/>
 

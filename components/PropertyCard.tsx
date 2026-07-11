@@ -31,21 +31,24 @@ const PropertyCard = ({
         }}
         onPress={()=>router.push(`/(root)/property/${property.id}`)}
         >
-            <Image source={{uri:property.images[0]}}
-                  className='w-28 h-28'
-                  resizeMode='cover'/>
-
+           <Image source={{ uri:
+            property.images.length > 0 
+            ? property.images[0]
+            : require("../assets/logos/icon.png")
+           }}
+            className='w-28 h-28'
+            resizeMode='cover'/>
 
             <View className='flex-1 p-3 justify-between'>
                 <View>
                     <Text
-                    className='text-sm font-bold text-gray-800 mb-1'>
+                    className='text-sm font-bold text-gray-800 mb-1' numberOfLines={1}>
                         {property.title}
                     </Text>
                     
                     <View className='flex-row items-center gap-1'>
                         <Ionicons name='location-outline' size={11} color="#687280"/>
-                        <Text className='text-xs text-gray-500 numberOfLines={1}'>
+                        <Text className='text-xs text-gray-500 ' numberOfLines={1}>
                             {property.city}
                         </Text>
                     </View>
@@ -55,7 +58,7 @@ const PropertyCard = ({
                         {formatPrice(property.price)}
                     </Text>
                     {property.is_sold && (
-                        <View className='bg-red=50 px-2 py-0.5 rounded-full'>
+                        <View className='bg-red-50 px-2 py-0.5 rounded-full'>
                             <Text className='text-red-500 text-xs font-semibold'>
                                 Sold
                             </Text>
