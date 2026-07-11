@@ -6,7 +6,7 @@ export interface Property{
     type:string;
     bedrooms:number;
     bathrooms:number;
-    area_sqrt:number;
+    area_sqft:number;
     address:string;
     city:string;
     latitude:number;

@@ -7,6 +7,7 @@ import { Property } from '@/types';
 import { supabase } from '@/lib/supabase';
 import { Ionicons } from "@expo/vector-icons"
 import FeaturedCard from '@/components/FeaturedCard';
+import PropertyCard from '@/components/PropertyCard';
 
 export default function index() {
 
@@ -113,7 +114,7 @@ export default function index() {
 
         renderItem={({item})=>(
           <View className='px-5'>
-            <Text>{item.title}</Text>
+            <PropertyCard property={item}/>
           </View>
         )}
 
