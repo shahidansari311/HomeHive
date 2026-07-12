@@ -113,21 +113,19 @@ export default function Profile() {
         <MenuItem
           icon="notifications-outline"
           label="Notifications"
-          onPress={() =>
-            Alert.alert("Coming Soon", "Notifications coming soon!")
-          }
+          onPress={() => router.push("/(root)/notifications")}
         />
         <MenuItem
           icon="settings-outline"
           label="Settings"
-          onPress={() => Alert.alert("Coming Soon", "Settings coming soon!")}
+          onPress={() => router.push("/(root)/settings")}
         />
         <MenuItem
           icon="help-circle-outline"
           label="Help & Support"
           onPress={() =>
             Linking.openURL(
-              "mailto:ansariishahid2005@gmail.com?subject=Help%20%26%20Support%20-%20Kribb%20App"
+              "mailto:ansariishahid2005@gmail.com?subject=Help%20%26%20Support%20-%20HomeHive%20App"
             )
           }
         />
