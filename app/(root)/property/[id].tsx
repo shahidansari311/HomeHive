@@ -1,4 +1,16 @@
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Alert, Linking } from 'react-native'
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  FlatList, 
+  TouchableOpacity, 
+  Image, 
+  Dimensions, 
+  NativeSyntheticEvent, 
+  NativeScrollEvent, 
+  Alert, 
+  Linking 
+} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useAuth } from '@clerk/expo';
@@ -11,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSaveProperty } from '@/hooks/useSaveProperty';
 import { formatPrice } from '@/lib/utils';
 import { WebView } from "react-native-webview";
+import ImageViewing  from 'react-native-image-viewing'
 
 
 const { width } = Dimensions.get("window");
@@ -309,7 +322,7 @@ export default function PropertyDetail() {
               <TouchableOpacity
                 onPress={handleDelete}
                 className="flex-1 flex-row items-center justify-center gap-2 bg-red-50 py-4 rounded-2xl border border-red-100"
-              >
+              > 
                 <Ionicons name="trash-outline" size={18} color="#EF4444" />
                 <Text className="text-red-500 font-semibold">Delete</Text>
               </TouchableOpacity>
@@ -319,12 +332,12 @@ export default function PropertyDetail() {
       </ScrollView>
 
       {/* Image Viewer */}
-      {/* <ImageViewing
+      <ImageViewing
         images={property.images.map((uri) => ({ uri }))}
         imageIndex={activeIndex}
         visible={imageViewerVisible}
         onRequestClose={() => setIMageViewerVisible(false)}
-      /> */}
+      />
     </View>
   )
 }
