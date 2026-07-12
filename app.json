@@ -31,6 +31,12 @@
     "plugins": [
       "expo-router",
       [
+        "expo-location",
+          {
+            "locationWhenInUsePermission":"Allow HomeHive to access location to tag property coordinates"
+          }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/logos/splash_icon.png",
