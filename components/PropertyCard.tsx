@@ -4,6 +4,7 @@ import { Property } from '@/types'
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { formatPrice } from '@/lib/utils';
+import { useSaveProperty } from '@/hooks/useSaveProperty';
 
 const PropertyCard = ({
     property, 
@@ -16,7 +17,10 @@ const PropertyCard = ({
 }) => {
 
     const router = useRouter();
-    const isSaved=true;
+    const {isSaved, saveloading, toggleSave}=useSaveProperty(
+        property.id,
+        onUnsave
+    );
 
   return (
      <TouchableOpacity
@@ -83,7 +87,10 @@ const PropertyCard = ({
                 </View>
             </View>
 
-            <TouchableOpacity className='w-10 items-center pt-3'>
+            <TouchableOpacity 
+            onPress={toggleSave}
+            disabled={saveloading}
+            className='w-10 items-center pt-3'>
                 <Ionicons
                 name={isSaved ? "heart" : "heart-outline"}
                 size={18}
