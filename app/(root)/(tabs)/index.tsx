@@ -53,14 +53,14 @@ export default function index() {
         ListHeaderComponent={
           <View>
             {/* Header  */}
-            <View className='flex-row items-center justify-between ps-5 pt-4 pb-5'>
+            <View className='flex-row items-center justify-between px-6 pt-4 pb-5'>
               <Image source={require("../../../assets/logos/icon.png")}
-              style={{height:36, width:90}}
+              style={{height:42, width:90}}
               resizeMode='contain'
               />
               <View className='items-end'>
                 <Text>Hello, </Text>
-                <Text className='text-gray-900 text-base font-bold'>{user?.firstName ?? "User"}</Text>
+                <Text className='text-gray-900 text-base font-bold'> {user?.firstName ?? "User"}</Text>
               </View>
             </View>
 

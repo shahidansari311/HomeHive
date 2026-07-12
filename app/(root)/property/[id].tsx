@@ -110,7 +110,7 @@ export default function PropertyDetail() {
   if (!property) {
     return (
       <View className='flex-1 items-center justify-center bg-white '>
-        <Text className='text-gray-500'>Property not found !</Text>
+        <Text className='text-gray-500 align-middle'>                     Property not found ! {"\n"}Property details are loading , Please Wait </Text>
       </View>
     )
   }
