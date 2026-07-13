@@ -109,7 +109,7 @@ export default function SignIn() {
             <View className="h-32 w-32 items-center justify-center ">
               <Image
               source={require("../../assets/logos/icon.png")}
-              style={{ width: 150, height: 130, marginTop: 8 }}
+              style={{ width: 120, height: 120, marginTop: 8 }}
               resizeMode="contain"
             />
             </View>

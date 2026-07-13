@@ -55,7 +55,7 @@ export default function index() {
             {/* Header  */}
             <View className='flex-row items-center justify-between px-6 pt-4 pb-5'>
               <Image source={require("../../../assets/logos/icon.png")}
-              style={{height:42, width:90}}
+              style={{height: 48, width: 48, borderRadius: 12}}
               resizeMode='contain'
               />
               <View className='items-end'>

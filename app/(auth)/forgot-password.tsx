@@ -47,29 +47,46 @@ export default function ForgotPassword() {
  
   const onResetPassword = async () => {
     setIsLoading(true);
-    const { error } = await signIn.resetPasswordEmailCode.verifyCode({
-      code,
-      password
+    
+    // First, verify the reset code sent to the email
+    const { error: verifyError } = await signIn.resetPasswordEmailCode.verifyCode({
+      code
     });
-    setIsLoading(false);
- 
-    if (error) {
-      alert(error.message);
+
+    if (verifyError) {
+      alert(verifyError.message);
+      setIsLoading(false);
       return;
     }
- 
-    if (signIn.status === "complete") {
-      await signIn.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-          const url = decorateUrl("/");
-          router.replace(url as any);
-        },
+
+    // If code is valid, signIn.status becomes "needs_new_password"
+    if (signIn.status === "needs_new_password") {
+      const { error: submitError } = await signIn.resetPasswordEmailCode.submitPassword({
+        password
       });
+      
+      if (submitError) {
+        alert(submitError.message);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Finalize the sign-in if successful
+      if ((signIn.status as string) === "complete") {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) {
+              console.log(session?.currentTask);
+              return;
+            }
+            const url = decorateUrl("/");
+            router.replace(url as any);
+          },
+        });
+      }
     }
+    
+    setIsLoading(false);
   };
   return (
     <View className="flex-1 bg-[#EAF4FF]">
@@ -97,7 +114,7 @@ export default function ForgotPassword() {
             <View className="h-32 w-32 items-center justify-center ">
               <Image
               source={require("../../assets/logos/icon.png")}
-              style={{ width: 150, height: 130, marginTop: 8 }}
+              style={{ width: 120, height: 120, marginTop: 8 }}
               resizeMode="contain"
             />
             </View>
